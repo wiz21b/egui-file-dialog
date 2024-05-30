@@ -5,7 +5,7 @@ use egui::text::{CCursor, CCursorRange};
 
 use crate::config::{
     FileDialogConfig, FileDialogKeyBindings, FileDialogLabels, FileDialogStorage, Filter,
-    QuickAccess,
+    QuickAccess, IconFilter
 };
 use crate::create_directory_dialog::CreateDirectoryDialog;
 use crate::data::{DirectoryContent, DirectoryEntry, Disk, Disks, UserDirectories};
@@ -842,6 +842,11 @@ impl FileDialog {
     /// Returns the state the dialog is currently in.
     pub fn state(&self) -> DialogState {
         self.state.clone()
+    }
+
+    pub fn set_file_filter(mut self, icon: &str, filter: Filter<std::path::Path>) -> Self {
+        self.config = self.config.set_file_filter(icon, filter);
+        self
     }
 }
 
@@ -2374,7 +2379,7 @@ impl FileDialog {
         self.directory_error = None;
 
         self.directory_content =
-            match DirectoryContent::from_path(&self.config, path, self.show_files) {
+            match DirectoryContent::from_path(&self.config, path, self.show_files, &self.config.file_filters) {
                 Ok(content) => content,
                 Err(err) => {
                     self.directory_content.clear();

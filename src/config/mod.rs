@@ -108,6 +108,7 @@ pub struct FileDialogConfig {
     /// Sets custom icons for different files or folders.
     /// Use `FileDialogConfig::set_file_icon` to add a new icon to this list.
     pub file_icon_filters: Vec<IconFilter>,
+    pub file_filters: Vec<IconFilter>,
 
     /// Custom sections added to the left sidebar for quick access.
     /// Use `FileDialogConfig::add_quick_access` to add a new section to this list.
@@ -204,6 +205,7 @@ impl Default for FileDialogConfig {
             removable_device_icon: String::from("💾"),
 
             file_icon_filters: Vec::new(),
+            file_filters: Vec::new(),
 
             quick_accesses: Vec::new(),
 
@@ -277,6 +279,17 @@ impl FileDialogConfig {
 
         self
     }
+
+
+    pub fn set_file_filter(mut self, icon: &str, filter: Filter<Path>) -> Self {
+        self.file_filters.push(IconFilter {
+            icon: icon.to_string(),
+            filter,
+        });
+
+        self
+    }
+
 
     /// Adds a new custom quick access section to the left panel of the file dialog.
     ///

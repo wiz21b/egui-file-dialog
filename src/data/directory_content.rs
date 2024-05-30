@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 
-use crate::FileDialogConfig;
+use crate::{FileDialogConfig, IconFilter};
 
 /// Contains the metadata of a directory item.
 /// This struct is mainly there so that the metadata can be loaded once and not that
@@ -119,9 +119,10 @@ impl DirectoryContent {
         config: &FileDialogConfig,
         path: &Path,
         include_files: bool,
+        filters: &Vec<IconFilter>
     ) -> io::Result<Self> {
         Ok(Self {
-            content: load_directory(config, path, include_files)?,
+            content: load_directory(config, path, include_files, filters)?,
         })
     }
 
@@ -174,6 +175,7 @@ fn load_directory(
     config: &FileDialogConfig,
     path: &Path,
     include_files: bool,
+    filters: &Vec<IconFilter>
 ) -> io::Result<Vec<DirectoryEntry>> {
     let paths = fs::read_dir(path)?;
 
@@ -183,12 +185,19 @@ fn load_directory(
             Ok(entry) => {
                 let entry = DirectoryEntry::from_path(config, entry.path().as_path());
 
+
                 if entry.is_system_file() {
                     continue;
                 }
 
                 if !include_files && entry.is_file() {
                     continue;
+                }
+
+                if include_files && entry.is_file() {
+                    if filters.iter().find(|def| (def.filter)(entry.as_path())).is_none() {
+                        continue;
+                    }
                 }
 
                 result.push(entry);
