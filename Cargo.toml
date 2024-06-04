@@ -1,7 +1,7 @@
-[workspace]
-members = [
-    "examples/*"
-]
+#[workspace]
+#members = [
+#    "examples/*"
+#]
 
 [package]
 name = "egui-file-dialog"

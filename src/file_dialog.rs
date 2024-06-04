@@ -1688,7 +1688,7 @@ impl FileDialog {
                             }
                         }
 
-                        if selected && self.scroll_to_selection {
+                        if false && selected && self.scroll_to_selection {
                             response.scroll_to_me(Some(egui::Align::Center));
                             self.scroll_to_selection = false;
                         }
@@ -2183,6 +2183,7 @@ impl FileDialog {
                     .nth(index.saturating_sub(1))
                 {
                     self.select_item(item.clone());
+                    println!("select_next_visible_item_before");
                     self.scroll_to_selection = true;
                     return_val = true;
                 }
@@ -2212,6 +2213,7 @@ impl FileDialog {
                 .filtered_iter(self.config.storage.show_hidden, &search_value)
                 .nth(index.saturating_add(1))
             {
+                println!("select_next_visible_item_after");
                 self.select_item(item.clone());
                 self.scroll_to_selection = true;
                 return_val = true;
@@ -2231,6 +2233,7 @@ impl FileDialog {
             .filtered_iter(self.config.storage.show_hidden, &self.search_value.clone())
             .next()
         {
+            println!("select_first_visible_item");
             self.select_item(item.clone());
             self.scroll_to_selection = true;
         }
@@ -2245,6 +2248,7 @@ impl FileDialog {
             .filtered_iter(self.config.storage.show_hidden, &self.search_value)
             .last()
         {
+            println!("select_last_visible_item");
             self.select_item(item.clone());
             self.scroll_to_selection = true;
         }
@@ -2390,7 +2394,7 @@ impl FileDialog {
             };
 
         self.create_directory_dialog.close();
-        self.scroll_to_selection = true;
+        //self.scroll_to_selection = true;
 
         if self.mode == DialogMode::SaveFile {
             self.file_name_input_error = self.validate_file_name_input();
